@@ -10,7 +10,6 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
 
 WEBPAGE_URL = "INSERT WEB PAGE URL"
 FALLBACK_URL = "INSERT FALLBACK URL"
@@ -115,7 +114,8 @@ try:
             # Add a button to save cookies after the user navigates to the desired page
             add_save_cookies_button(driver)
 
-            logger.info("Please navigate to the desired page. Click 'Save Cookies' once you've reached the intended state.")
+            logger.info(
+                "Please navigate to the desired page. Click 'Save Cookies' once you've reached the intended state.")
 
             # Wait indefinitely until the user saves the cookies
             while True:
@@ -131,7 +131,7 @@ try:
             if no_slots_elements:
                 if not no_slots_notification_sent:
                     current_time = datetime.now().strftime("%H:%M %d/%m/%Y")
-                    message = "⚠️ No slots available at the moment. \n⏳ Checking every 60 seconds...\n\nGenerated at: {current_time}"
+                    message = f"⚠️ No slots available at the moment. \n⏳ Checking every 60 seconds...\n\nGenerated at: {current_time}"
                     logger.info(message)
                     send_notification(message)
                     no_slots_notification_sent = True
