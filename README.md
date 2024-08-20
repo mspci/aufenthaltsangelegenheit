@@ -65,7 +65,7 @@ bash geckodriver_installer.sh
 To ensure Selenium uses the correct Firefox profile, create a new profile:
 
 ```bash
-firefox -no-remote -CreateProfile "selenium ${PWD}/selenium_profile"
+firefox -no-remote -CreateProfile "selenium /home/$USER/snap/firefox/common/.mozilla/firefox/selenium"
 ```
 
 ## 🚀 Running the Script

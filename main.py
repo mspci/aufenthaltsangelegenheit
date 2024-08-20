@@ -16,7 +16,7 @@ FALLBACK_URL = "INSERT FALLBACK URL"
 GECKODRIVER_PATH = '/usr/local/bin/geckodriver'
 COOKIE_FILE = 'cookies.pkl'
 NOTIFICATION_URL = "INSERT NOTIFICATION URL"
-PROFILE_PATH = './selenium_profile'
+PROFILE_PATH = '/home/INSERT USER HERE/snap/firefox/common/.mozilla/firefox/selenium'
 
 # Set up logging with timestamps
 logging.basicConfig(level=logging.INFO,
@@ -35,31 +35,22 @@ def send_notification(message):
         logger.error(f"An error occurred while sending notification: {str(e)}")
 
 
-def add_save_cookies_button(driver):
-    """Adds a button in the browser window to save cookies."""
-    save_cookies_script = """
-    var button = document.createElement('button');
-    button.innerHTML = 'Save Cookies';
-    button.style.position = 'fixed';
-    button.style.top = '10px';
-    button.style.right = '10px';
-    button.style.padding = '10px';
-    button.style.zIndex = '10000';
-    document.body.appendChild(button);
-    button.onclick = function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/save_cookies', true);
-        xhr.send();
-    };
-    """
-    driver.execute_script(save_cookies_script)
-
-
 def save_cookies(driver):
     """Saves cookies to a file."""
     with open(COOKIE_FILE, 'wb') as f:
         pickle.dump(driver.get_cookies(), f)
     logger.info("Cookies saved successfully.")
+
+
+def load_cookies():
+    logger.info("Loading cookies from file...")
+    try:
+        with open(COOKIE_FILE, 'rb') as f:
+            cookies = pickle.load(f)
+            for cookie in cookies:
+                driver.add_cookie(cookie)
+    except FileNotFoundError:
+        logger.warning("No cookies file found. Continuing without loading cookies.")
 
 
 try:
@@ -79,14 +70,7 @@ try:
     logger.info("Opening page...")
     driver.get(WEBPAGE_URL)
 
-    logger.info("Loading cookies from file...")
-    try:
-        with open(COOKIE_FILE, 'rb') as f:
-            cookies = pickle.load(f)
-            for cookie in cookies:
-                driver.add_cookie(cookie)
-    except FileNotFoundError:
-        logger.warning("No cookies file found. Continuing without loading cookies.")
+    load_cookies()
 
     # Flag to track whether the "No slots available" notification has been sent
     no_slots_notification_sent = False
@@ -111,20 +95,17 @@ try:
             # Redirect to the fallback URL
             driver.get(FALLBACK_URL)
 
-            # Add a button to save cookies after the user navigates to the desired page
-            add_save_cookies_button(driver)
+            logger.info("Please navigate to the desired page. Cookies will be saved automatically.")
 
-            logger.info(
-                "Please navigate to the desired page. Click 'Save Cookies' once you've reached the intended state.")
-
-            # Wait indefinitely until the user saves the cookies
+            # Loop until the user manually navigates to the desired page
             while True:
-                # Simulate server-side listener to save cookies (placeholder for button's action)
-                if driver.current_url == FALLBACK_URL:
+                time.sleep(1)
+                if driver.current_url == WEBPAGE_URL:
                     save_cookies(driver)
-                    logger.info("Please restart the script after saving the cookies.")
+                    load_cookies()
                     break
-            break  # Exit the loop since we need to restart the script
+
+            continue
         else:
             # Check if no slots are available
             no_slots_elements = driver.find_elements(By.XPATH, "//*[contains(text(), 'Kein freier Termin verfügbar')]")
