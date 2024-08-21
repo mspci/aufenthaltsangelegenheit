@@ -5,7 +5,7 @@ interact with the site, continuously checking for available slots and sending no
 
 ## 🛠️ Environment Setup
 
-To ensure the script runs smoothly, you need the following:
+The following environment was used to develop and test this script:
 
 - **Python Version**: 3.12.4
 - **OS**: Ubuntu 24.04
@@ -13,7 +13,7 @@ To ensure the script runs smoothly, you need the following:
 
 ## 📋 Prerequisites
 
-Before you begin, make sure you have the following installed and set up:
+To install the dependencies, the following commands may be used:
 
 ### 1. **Install Poetry** 📦
 
@@ -25,13 +25,11 @@ pipx install poetry
 
 ### 2. **Install Firefox** 🌐
 
-Ensure Firefox is installed on your system. If not, install it using:
-
 ```bash
 sudo snap install firefox
 ```
 
-If you used `apt` to install Firefox, you'll need to modify the path to the default profile in `main.py:21`. Here are
+If you used `apt` to install Firefox, you'll need to modify the path to the default profile in `main.py:20`. Here are
 the paths to Firefox profiles:
 
 - Ubuntu (Snap): `/home/$USER/snap/firefox/common/.mozilla/firefox/selenium`
@@ -101,8 +99,6 @@ If you plan to modify or further develop this script, the following Poetry comma
 - **Add a Dependency**: `poetry add <dependency>`
 - **Install Dependencies**: `poetry install`
 - **Export Requirements**: `poetry export -f requirements.txt -o requirements.txt`
-
-Feel free to use these commands as you develop or modify the script.
 
 ## 🖥️ Using Chrome
 
